@@ -4,6 +4,7 @@ import os
 import math
 import sys
 import neat
+import csv
 
 SCREEN_WIDTH = 2560
 SCREEN_HEIGHT = 1016
@@ -29,6 +30,7 @@ class Car(pygame.sprite.Sprite):
         self.alive = True
         self.radars = []
         self.counter = 0
+        self.vector_num = 0
 
     def update(self):
         self.radars.clear()
@@ -41,7 +43,7 @@ class Car(pygame.sprite.Sprite):
 
     def drive(self):
         # if self.drive_state:
-        self.rect.center += self.vel_vector * 6
+        self.rect.center += self.vel_vector * self.vector_num
 
     def collision(self):
         length = 40
@@ -130,8 +132,11 @@ def eval_genomes(genomes, config):
 
     run = True
     while run:
+        f = open('./output.csv', 'a')
+        f2 = open('./input.csv', 'a')
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                f.close()
                 pygame.quit()
                 sys.exit()
 
@@ -147,17 +152,38 @@ def eval_genomes(genomes, config):
                 remove(i)
 
         for i, car in enumerate(cars):
+            writer = csv.writer(f2)
+            writer.writerow(car.sprite.data())
 
             output = nets[i].activate(car.sprite.data())
-            # print(output)
+
+            writer = csv.writer(f)
+            writer.writerow(output)
+
+            # print(output[2])
+
+            # car.sprite.vector_num = output[2] *20
 
             if output[0] > 0.7:
                 car.sprite.direction = 1
+                car.sprite.vector_num = 6
             if output[1] > 0.7:
                 car.sprite.direction = -1
+                car.sprite.vector_num = 6
+            # if output[0] > 0.5:
+
+            #     car.sprite.vector_num = 5
+            # if output[1] > 0.5:
+
+            #     car.sprite.vector_num = 5
+
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
+                car.sprite.vector_num = 20
 
+            if output[0] <= 0.5 and output[1] <= 0.5:
+                car.sprite.direction = 0
+                car.sprite.vector_num = 10
         # user_input = pygame.key.get_pressed()
         # if sum(pygame.key.get_pressed()) <= 1:
         #     car.sprite.drive_state = False
