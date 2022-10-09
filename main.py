@@ -152,38 +152,37 @@ def eval_genomes(genomes, config):
                 remove(i)
 
         for i, car in enumerate(cars):
-            writer = csv.writer(f2)
-            writer.writerow(car.sprite.data())
+            # writer = csv.writer(f2)
+            # writer.writerow(car.sprite.data())
 
             output = nets[i].activate(car.sprite.data())
 
-            writer = csv.writer(f)
-            writer.writerow(output)
+            # writer = csv.writer(f)
+            # writer.writerow(output)
 
             # print(output[2])
-
+            car.sprite.vector_num = 6
             # car.sprite.vector_num = output[2] *20
+
+            # if output[0] <= 0.7 and output[1] <= 0.7:
+            #     car.sprite.vector_num = 15
+            # if output[0] <= 0.6 and output[1] <= 0.6:
+            #     car.sprite.vector_num = 10
+            # if output[0] <= 0.5 and output[1] <= 0.5:
+            #     car.sprite.vector_num = 9
+            # if output[0] <= 0.4 and output[1] <= 0.4:
+            #     car.sprite.vector_num = 8
+            # if output[0] <= 0.3 and output[1] <= 0.3:
+            #     car.sprite.vector_num = 7
 
             if output[0] > 0.7:
                 car.sprite.direction = 1
-                car.sprite.vector_num = 6
             if output[1] > 0.7:
                 car.sprite.direction = -1
-                car.sprite.vector_num = 6
-            # if output[0] > 0.5:
-
-            #     car.sprite.vector_num = 5
-            # if output[1] > 0.5:
-
-            #     car.sprite.vector_num = 5
-
             if output[0] <= 0.7 and output[1] <= 0.7:
                 car.sprite.direction = 0
-                car.sprite.vector_num = 20
+                car.sprite.vector_num = 15
 
-            if output[0] <= 0.5 and output[1] <= 0.5:
-                car.sprite.direction = 0
-                car.sprite.vector_num = 10
         # user_input = pygame.key.get_pressed()
         # if sum(pygame.key.get_pressed()) <= 1:
         #     car.sprite.drive_state = False
